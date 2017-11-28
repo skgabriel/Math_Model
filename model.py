@@ -1,20 +1,11 @@
 import torch.nn as nn
 from torch.autograd import Variable
-import data
 
 class RNNModel(nn.Module):
     """Container module with an encoder, a recurrent module, and a decoder."""
 
-    def __init__(self):
+    def __init__(self, rnn_type, ntoken, ninp, nhid, nlayers, dropout=0.5, tie_weights=False):
         super(RNNModel, self).__init__()
-        tie_weights = False
-        ninp = 200
-        corpus = data.Corpus('./Data',True)
-        ntoken = len(corpus.dictionary.idx2word) #67118
-        rnn_type = 'GRU'
-        nhid = 200
-        nlayers = 1
-        dropout = 0.5
         self.drop = nn.Dropout(dropout)
         self.encoder = nn.Embedding(ntoken, ninp)
         if rnn_type in ['LSTM', 'GRU']:

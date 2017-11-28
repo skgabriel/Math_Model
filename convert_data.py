@@ -31,7 +31,7 @@ def convert_text(fobj,output_name):
     output.close() 
 
 def main():
-    convert_text(open('./Data/Train/train.json','r'),'./Data/Train/train.csv')
+    convert_text(open('./Data/Test/test.json','r'),'./Data/test.csv')
 
 if __name__ == '__main__':
 
