@@ -8,6 +8,8 @@ from torch.autograd import Variable
 
 import data
 import model
+import sys
+
 
 parser = argparse.ArgumentParser(description='PyTorch Wikitext-2 RNN/LSTM Language Model')
 parser.add_argument('--data', type=str, default='./Data',
@@ -42,7 +44,17 @@ parser.add_argument('--log-interval', type=int, default=2, metavar='N',
                     help='report interval')
 parser.add_argument('--save', type=str,  default='model.pt',
                     help='path to save the final model')
+parser.add_argument('--mawps', action='store_true', help='using mawps dataset instead of aqua')
+parser.add_argument('--bpe', action='store_true', help='using byte-pair encoding')
+parser.add_argument('--log', type=str,  default='output.log',
+                    help='path to save the console output')
 args = parser.parse_args()
+
+old_stdout = sys.stdout
+
+log_file = open(args.log,"w")
+
+sys.stdout = log_file
 
 # Set the random seed manually for reproducibility.
 torch.manual_seed(args.seed)
@@ -55,8 +67,16 @@ if torch.cuda.is_available():
 ###############################################################################
 # Load data
 ###############################################################################
-
-corpus = data.Corpus(args.data)
+if not args.mawps:
+    if not args.bpe:
+        corpus = data.Corpus(args.data)
+    else:
+        corpus = data.Corpus(args.data, bpe=args.bpe)
+else:
+    if not args.bpe:
+        corpus = data.Corpus(args.data, args.mawps)
+    else:
+        corpus = data.Corpus(args.data, args.mawps, args.bpe)
 
 # Starting from sequential data, batchify arranges the dataset into columns.
 # For instance, with the alphabet as the sequence and batch size 4, we'd get
@@ -212,3 +232,7 @@ print('=' * 89)
 print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(
     test_loss, math.exp(test_loss)))
 print('=' * 89)
+
+sys.stdout = old_stdout
+
+log_file.close()

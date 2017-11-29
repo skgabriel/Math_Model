@@ -18,11 +18,29 @@ class Dictionary(object):
 
 
 class Corpus(object):
-    def __init__(self, path):
+    def __init__(self, path, type='aqua',bpe=False):
         self.dictionary = Dictionary()
-        self.train = self.tokenize(os.path.join(path, 'train.csv'))
-        self.valid = self.tokenize(os.path.join(path, 'dev.csv'))
-        self.test = self.tokenize(os.path.join(path, 'test.csv'))
+
+        if type == 'aqua':
+            if bpe==False:
+                self.train = self.tokenize(os.path.join(path, 'train.csv'))
+                self.valid = self.tokenize(os.path.join(path, 'dev.csv'))
+                self.test = self.tokenize(os.path.join(path, 'test.csv'))
+            else:
+                self.train = self.tokenize(os.path.join(path, 'train_bpe.csv'))
+                self.valid = self.tokenize(os.path.join(path, 'dev_bpe.csv'))
+                self.test = self.tokenize(os.path.join(path, 'test_bpe.csv'))
+
+        else:
+            if bpe==False:
+                self.train = self.tokenize(os.path.join(path, 'mawps_train.csv'))
+                self.valid = self.tokenize(os.path.join(path, 'mawps_valid.csv'))
+                self.test = self.tokenize(os.path.join(path, 'mawps_test.csv'))
+            else:
+                self.train = self.tokenize(os.path.join(path, 'mawps_train_bpe.csv'))
+                self.valid = self.tokenize(os.path.join(path, 'mawps_valid_bpe.csv'))
+                self.test = self.tokenize(os.path.join(path, 'mawps_test_bpe.csv'))
+
 
     def tokenize(self, path):
         """Tokenizes a text file."""
